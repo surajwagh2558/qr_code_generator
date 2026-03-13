@@ -74,5 +74,5 @@ http://localhost/qr_code_generator
 
 ## Author
 
-Suraj Sachin Wagh  
+Suraj Wagh  
 TY BBA-CA Student
