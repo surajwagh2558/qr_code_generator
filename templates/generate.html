@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block title %}Generate QR{% endblock %}
+
+{% block content %}
+<!-- Custom CSS for futuristic form styles and 3D animations -->
+<style>
+  /* Futuristic card styling */
+  .generate-card {
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.9), rgba(0, 40, 80, 0.8));
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
+    border-radius: 15px;
+    transform-style: preserve-3d;
+    animation: card-power-on 1s ease-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes card-power-on {
+    0% { opacity: 0; transform: rotateX(-90deg) scale(0.8); }
+    50% { opacity: 0.5; transform: rotateX(-45deg) scale(0.9); }
+    100% { opacity: 1; transform: rotateX(0deg) scale(1); }
+  }
+
+  /* Neon input styling */
+  .neon-input {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+  }
+
+  .neon-input:focus {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.8), 0 0 30px rgba(0, 255, 255, 0.5);
+    transform: scale(1.02) rotateX(5deg);
+  }
+
+  /* Neon button styling */
+  .neon-btn {
+    background: linear-gradient(45deg, #00ffff, #0080ff);
+    border: none;
+    color: #000;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+  }
+
+  .neon-btn:hover {
+    transform: translateY(-3px) scale(1.05) rotateX(10deg);
+    box-shadow: 0 10px 25px rgba(0, 255, 255, 0.5);
+  }
+
+  /* Holographic overlay */
+  .holo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+    pointer-events: none;
+    opacity: 0.3;
+    z-index: 1;
+  }
+
+  /* QR image styling with 3D reveal */
+  .qr-display {
+    text-align: center;
+    margin-top: 20px;
+    animation: qr-reveal 1s ease-out;
+  }
+
+  .qr-image {
+    max-width: 200px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    animation: qr-pulse 3s infinite ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes qr-reveal {
+    0% { opacity: 0; transform: rotateY(180deg) scale(0.5); }
+    100% { opacity: 1; transform: rotateY(0deg) scale(1); }
+  }
+
+  @keyframes qr-pulse {
+    0%, 100% { transform: scale(1) rotateX(0deg); }
+    50% { transform: scale(1.05) rotateX(5deg); }
+  }
+
+  /* Scanning lines for QR */
+  .scan-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.3) 50%);
+    background-size: 100% 4px;
+    animation: scan-qr 2s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  @keyframes scan-qr {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  /* Floating input nodes */
+  .input-nodes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .input-node {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: node-blink 4s infinite ease-in-out;
+  }
+
+  .input-node:nth-child(1) { top: 15%; left: 15%; animation-delay: 0s; }
+  .input-node:nth-child(2) { top: 50%; right: 15%; animation-delay: 1s; }
+  .input-node:nth-child(3) { bottom: 15%; left: 50%; animation-delay: 2s; }
+
+  @keyframes node-blink {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+  }
+</style>
+
+<div class="d-flex justify-content-center">
+  <div class="generate-card card shadow p-4 w-75">
+    <!-- Holographic overlay -->
+    <div class="holo-overlay"></div>
+    <!-- Floating input nodes -->
+    <div class="input-nodes">
+      <div class="input-node"></div>
+      <div class="input-node"></div>
+      <div class="input-node"></div>
+    </div>
+
+    <h4 class="text-center text-cyan-400 glow mb-4">Generate QR Code</h4>
+
+    <form method="post">
+      <div class="mb-3">
+        <label for="data" class="form-label text-light">Enter text or URL</label>
+        <input type="text" id="data" name="data" class="neon-input form-control" placeholder="Enter text or URL" required>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="neon-btn btn">Generate</button>
+      </div>
+    </form>
+
+    {% if qr_image %}
+  <hr class="my-4 border-cyan-400">
+  <div class="qr-display">
+    <h5 class="text-cyan-400 glow">Your QR Code</h5>
+
+    <div class="position-relative d-inline-block mb-3">
+      <img src="/{{ qr_image }}" alt="Generated QR Code" class="qr-image img-thumbnail">
+      <div class="scan-lines"></div>
+    </div>
+
+    <!-- Back button -->
+    <div class="text-center mt-3">
+      <a href="{{ url_for('auth.dashboard') }}"
+         class="neon-btn btn px-4">
+        ⬅ Back to Dashboard
+      </a>
+    </div>
+  </div>
+{% endif %}
+
+  </div>
+</div>
+{% endblock %}

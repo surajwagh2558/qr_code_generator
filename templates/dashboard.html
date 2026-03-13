@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Custom CSS for futuristic dashboard styles and 3D animations -->
+<style>
+  /* Futuristic header styling */
+  .dashboard-header {
+    color: #00ffff;
+    font-size: 2rem;
+    font-weight: 600;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    text-align: center;
+    animation: header-init 2s ease-out;
+    margin-bottom: 30px;
+  }
+
+  @keyframes header-init {
+    0% { opacity: 0; transform: rotateX(-90deg) scale(0.8); }
+    50% { opacity: 0.5; transform: rotateX(-45deg) scale(0.9); }
+    100% { opacity: 1; transform: rotateX(0deg) scale(1); }
+  }
+
+  /* Futuristic list styling */
+  .dashboard-list {
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.9), rgba(0, 40, 80, 0.8));
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    transform-style: preserve-3d;
+    position: relative;
+  }
+
+  .list-group-item {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(0, 255, 255, 0.2) !important;
+    color: #e0e0e0 !important;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    font-weight: 500;
+  }
+
+  .list-group-item:hover {
+    background: rgba(0, 255, 255, 0.1) !important;
+    border-color: rgba(0, 255, 255, 0.5) !important;
+    color: #00ffff !important;
+    transform: translateY(-5px) rotateX(10deg) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.4);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+  }
+
+  .list-group-item::before {
+    content: '▶';
+    margin-right: 10px;
+    color: #00ffff;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+
+  .list-group-item:hover::before {
+    transform: scale(1.2) rotate(90deg);
+  }
+
+  /* Holographic overlay */
+  .holo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+    pointer-events: none;
+    opacity: 0.3;
+    z-index: 1;
+    border-radius: 15px;
+  }
+
+  /* Staggered 3D fade-in for list items */
+  .list-item {
+    opacity: 0;
+    transform: translateX(-30px) rotateY(-15deg);
+    animation: item-slide-in 0.8s ease-out forwards;
+  }
+
+  .list-item:nth-child(1) { animation-delay: 0.5s; }
+  .list-item:nth-child(2) { animation-delay: 0.7s; }
+
+  @keyframes item-slide-in {
+    to {
+      opacity: 1;
+      transform: translateX(0) rotateY(0deg);
+    }
+  }
+
+  /* Floating interface nodes */
+  .interface-nodes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .interface-node {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(0, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: node-orbit 6s infinite ease-in-out;
+  }
+
+  .interface-node:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
+  .interface-node:nth-child(2) { top: 60%; right: 20%; animation-delay: 2s; }
+  .interface-node:nth-child(3) { bottom: 20%; left: 50%; animation-delay: 4s; }
+
+  @keyframes node-orbit {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    50% { transform: translateY(-10px) scale(1.3); opacity: 1; }
+  }
+</style>
+
+<div class="text-center">
+  <h3 class="dashboard-header">Welcome, {{ current_user.username }}</h3>
+
+  <div class="d-flex justify-content-center">
+    <div class="dashboard-list position-relative w-75">
+      <!-- Holographic overlay -->
+      <div class="holo-overlay"></div>
+      <!-- Floating interface nodes -->
+      <div class="interface-nodes">
+        <div class="interface-node"></div>
+        <div class="interface-node"></div>
+        <div class="interface-node"></div>
+      </div>
+
+      <div class="list-group">
+        <a href="{{ url_for('auth.generate_qr') }}" class="list-group-item list-group-item-action list-item">
+          Generate QR Code
+        </a>
+        <a href="{{ url_for('auth.history') }}" class="list-group-item list-group-item-action list-item">
+          View QR History
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

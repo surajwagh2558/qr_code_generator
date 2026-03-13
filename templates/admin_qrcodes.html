@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All QR Codes</title>
+</head>
+<body>
+<h2>All Generated QR Codes</h2>
+
+{% for qr in qrcodes %}
+    <div>
+        <p>
+            <strong>User ID:</strong> {{ qr.user_id }} <br>
+            <strong>Data:</strong> {{ qr.data }}
+        </p>
+        <img src="/{{ qr.image_path }}" width="150">
+        <hr>
+    </div>
+{% else %}
+    <p>No QR codes available.</p>
+{% endfor %}
+
+<a href="{{ url_for('auth.admin_dashboard') }}">Back to Admin Dashboard</a><br>
+<a href="{{ url_for('auth.logout') }}">Logout</a>
+</body>
+</html>

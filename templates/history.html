@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block title %}QR History{% endblock %}
+
+{% block content %}
+<!-- Custom CSS for futuristic history styles and 3D animations -->
+<style>
+  /* Futuristic header styling */
+  .history-header {
+    color: #00ffff;
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  /* Futuristic card styling */
+  .history-card {
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.9), rgba(0, 40, 80, 0.8));
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
+    border-radius: 15px;
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .history-card:hover {
+    transform: perspective(1000px) rotateX(10deg) rotateY(10deg) scale(1.05);
+    box-shadow: 0 20px 40px rgba(0, 255, 255, 0.4);
+  }
+
+  .history-card .card-body {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .qr-data {
+    color: #e0e0e0;
+    margin-bottom: 15px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  }
+
+  .qr-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    animation: qr-pulse 4s infinite ease-in-out;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    margin-bottom: 15px;
+  }
+
+  @keyframes qr-pulse {
+    0%, 100% { transform: scale(1) rotateX(0deg); }
+    50% { transform: scale(1.05) rotateX(5deg); }
+  }
+
+  /* Neon delete button */
+  .neon-delete-btn {
+    background: linear-gradient(45deg, #ff0040, #800020);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 0, 64, 0.3);
+  }
+
+  .neon-delete-btn:hover {
+    transform: translateY(-2px) scale(1.05) rotateX(10deg);
+    box-shadow: 0 10px 25px rgba(255, 0, 64, 0.5);
+  }
+
+  /* Holographic overlay on cards */
+  .holo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+    pointer-events: none;
+    opacity: 0.3;
+    z-index: 1;
+  }
+
+  /* Staggered 3D fade-in for cards */
+  .history-card-container {
+    opacity: 0;
+    transform: translateY(30px) rotateX(-15deg);
+    animation: card-fade-in 0.8s ease-out forwards;
+  }
+
+  {% for qr in qrcodes %}
+  .history-card-container:nth-child({{ loop.index }}) { animation-delay: {{ loop.index * 0.15 }}s; }
+  {% endfor %}
+
+  @keyframes card-fade-in {
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+  }
+
+  /* Floating archive nodes */
+  .archive-nodes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .archive-node {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(0, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: node-float 5s infinite ease-in-out;
+  }
+
+  .archive-node:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+  .archive-node:nth-child(2) { top: 30%; right: 20%; animation-delay: 1.5s; }
+  .archive-node:nth-child(3) { bottom: 20%; left: 30%; animation-delay: 3s; }
+  .archive-node:nth-child(4) { bottom: 40%; right: 10%; animation-delay: 4.5s; }
+
+  @keyframes node-float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    50% { transform: translateY(-15px) scale(1.2); opacity: 1; }
+  }
+
+  /* Empty state styling */
+  .empty-state {
+    text-align: center;
+    color: #e0e0e0;
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    animation: fade-in-empty 1s ease-out;
+  }
+
+  @keyframes fade-in-empty {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* Neon navigation buttons */
+.neon-nav-btn {
+  background: linear-gradient(45deg, #00ffff, #0080ff);
+  border: none;
+  color: #000;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+}
+
+.neon-nav-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 255, 255, 0.5);
+}
+
+</style>
+
+<div class="position-relative">
+  <!-- Floating archive nodes -->
+  <div class="archive-nodes">
+    <div class="archive-node"></div>
+    <div class="archive-node"></div>
+    <div class="archive-node"></div>
+    <div class="archive-node"></div>
+  </div>
+
+  <h4 class="history-header">Your QR Code History</h4>
+
+  {% if qrcodes %}
+  <div class="row g-4">
+    {% for qr in qrcodes %}
+    <div class="col-md-4 history-card-container">
+      <div class="history-card card mb-3 shadow position-relative">
+        <!-- Holographic overlay -->
+        <div class="holo-overlay"></div>
+        <div class="card-body">
+          <p class="qr-data">{{ qr.data }}</p>
+          <img src="/{{ qr.image_path }}" alt="QR Code" class="qr-image img-fluid">
+          <a href="{{ url_for('auth.delete_qr', qr_id=qr.id) }}"
+             class="neon-delete-btn btn btn-sm px-3 py-2 rounded"
+             onclick="return confirm('Delete this QR code?')">
+            Delete
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty-state">No QR codes in your history yet. Generate one to get started!</p>
+  {% endif %}
+</div>
+<!-- Navigation buttons -->
+<div class="text-center mt-5">
+  <a href="{{ url_for('auth.dashboard') }}"
+     class="neon-nav-btn btn px-4 me-3">
+    ⬅ Back to Dashboard
+  </a>
+
+  <a href="{{ url_for('auth.generate_qr') }}"
+     class="neon-nav-btn btn px-4">
+    ➕ Generate New QR
+  </a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,558 @@
+{% extends "base.html" %}
+{% block title %}Home - QR Generator{% endblock %}
+
+{% block content %}
+<style>
+  /* Modern Gradient Background */
+  .home-container {
+    min-height: calc(100vh - 200px);
+    background: linear-gradient(135deg, 
+      rgba(0, 10, 20, 0.95) 0%,
+      rgba(0, 30, 60, 0.9) 50%,
+      rgba(0, 50, 100, 0.85) 100%
+    );
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-container::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.15) 0%, transparent 70%);
+    top: -250px;
+    right: -250px;
+  }
+
+  /* Animated Hero Section */
+  .hero-section {
+    text-align: center;
+    padding: 100px 20px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #00ffff, #0080ff, #00ffaa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 25px;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem;
+    color: #cce7ff;
+    max-width: 800px;
+    margin: 0 auto 50px;
+    line-height: 1.6;
+    opacity: 0.9;
+    animation: fadeInUp 1s ease-out 0.2s both;
+  }
+
+  /* Animated QR Code Preview */
+  .qr-preview {
+    width: 180px;
+    height: 180px;
+    margin: 30px auto 40px;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .qr-preview-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #00ffff, #0080ff);
+    border-radius: 12px;
+    padding: 15px;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+  }
+
+  .qr-pattern {
+    width: 100%;
+    height: 100%;
+    background: 
+      linear-gradient(45deg, transparent 45%, #000 45%, #000 55%, transparent 55%),
+      linear-gradient(-45deg, transparent 45%, #000 45%, #000 55%, transparent 55%);
+    background-size: 30px 30px;
+    border-radius: 8px;
+  }
+
+  /* Modern Button Group */
+  .cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s ease-out 0.4s both;
+  }
+
+  .cta-btn {
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .cta-btn:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  .btn-login {
+    background: linear-gradient(45deg, #00ffff, #0080ff);
+    color: #000;
+    box-shadow: 0 5px 25px rgba(0, 255, 255, 0.4);
+  }
+
+  .btn-register {
+    background: linear-gradient(45deg, #ff00ff, #ff0080);
+    color: white;
+    box-shadow: 0 5px 25px rgba(255, 0, 255, 0.4);
+  }
+
+  .btn-demo {
+    background: linear-gradient(45deg, #00ffaa, #00cc88);
+    color: #000;
+    box-shadow: 0 5px 25px rgba(0, 255, 170, 0.4);
+  }
+
+  /* Stats Counter */
+  .stats-section {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin: 60px 0;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s ease-out 0.6s both;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #00ffff, #0080ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label {
+    color: #a0d2ff;
+    font-size: 1rem;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Enhanced Feature Cards */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 60px 0;
+  }
+
+  .feature-card {
+    background: rgba(0, 20, 40, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+    transition: left 0.6s;
+  }
+
+  .feature-card:hover::before {
+    left: 100%;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-10px);
+    border-color: #00ffff;
+    box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2);
+  }
+
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #00ffff, #0080ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .feature-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #00ffff;
+    margin-bottom: 15px;
+  }
+
+  .feature-description {
+    color: #cce7ff;
+    line-height: 1.6;
+    opacity: 0.9;
+  }
+
+  /* How It Works Section */
+  .how-it-works {
+    text-align: center;
+    margin: 80px 0;
+    animation: fadeInUp 1s ease-out 0.8s both;
+  }
+
+  .section-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #00ffff;
+    margin-bottom: 50px;
+  }
+
+  .steps-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .step {
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
+  }
+
+  .step-number {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, #00ffff, #0080ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #000;
+  }
+
+  .step-title {
+    color: #00ffff;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+  }
+
+  /* Footer CTA */
+  .footer-cta {
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(0, 30, 60, 0.6);
+    border-radius: 30px;
+    margin: 60px 0;
+    animation: fadeInUp 1s ease-out 1s both;
+  }
+
+  .footer-cta h3 {
+    color: #00ffff;
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+
+  .footer-cta p {
+    color: #cce7ff;
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.1rem;
+    }
+    
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .cta-btn {
+      width: 100%;
+      max-width: 300px;
+    }
+    
+    .stats-section {
+      gap: 30px;
+    }
+    
+    .stat-number {
+      font-size: 2rem;
+    }
+  }
+</style>
+
+<div class="home-container">
+  <div class="hero-section">
+    <!-- Animated QR Preview -->
+    <div class="qr-preview">
+      <div class="qr-preview-inner">
+        <div class="qr-pattern"></div>
+      </div>
+    </div>
+
+    <h1 class="hero-title">Transform Links Into<br>Dynamic QR Codes</h1>
+    
+    <p class="hero-subtitle">
+      Create, manage, and track QR codes with enterprise-grade security. 
+      Perfect for businesses, marketers, and developers looking to 
+      bridge the physical-digital gap seamlessly.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="cta-buttons">
+      <button class="cta-btn btn-login" onclick="window.location.href='{{ url_for('auth.login') }}'">
+        🔐 Login to Dashboard
+      </button>
+      <button class="cta-btn btn-register" onclick="window.location.href='{{ url_for('auth.register') }}'">
+        🚀 Get Started Free
+      </button>
+      <button class="cta-btn btn-demo" onclick="window.location.href='#features'">
+        ✨ See Features
+      </button>
+    </div>
+
+    <!-- Stats Counter -->
+    <div class="stats-section">
+      <div class="stat-item">
+        <div class="stat-number" data-count="10K">10K+</div>
+        <div class="stat-label">QR Codes Generated</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-count="99.9">99.9%</div>
+        <div class="stat-label">Uptime</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-count="256">256-bit</div>
+        <div class="stat-label">Encryption</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div id="features" class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h3 class="feature-title">Military-Grade Security</h3>
+      <p class="feature-description">
+        AES-256 encryption, secure session management, and role-based access control 
+        ensure your data stays protected.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3 class="feature-title">Lightning Fast Generation</h3>
+      <p class="feature-description">
+        Generate QR codes in milliseconds with our optimized engine. 
+        Support for URLs, text, emails, and contact information.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3 class="feature-title">Smart Analytics</h3>
+      <p class="feature-description">
+        Track scan statistics, location data, and user engagement 
+        with our built-in analytics dashboard.
+      </p>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="how-it-works">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps-container">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3 class="step-title">Sign Up & Login</h3>
+        <p class="feature-description">
+          Create your account in 30 seconds. Choose between user and admin roles.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3 class="step-title">Generate QR Code</h3>
+        <p class="feature-description">
+          Enter any URL or text, customize design, and generate instantly.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3 class="step-title">Manage & Track</h3>
+        <p class="feature-description">
+          Download, share, and track your QR codes from your personal dashboard.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Features -->
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">👑</div>
+      <h3 class="feature-title">Admin Dashboard</h3>
+      <p class="feature-description">
+        Full control panel to manage users, monitor activity, and oversee 
+        all generated QR codes across the platform.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <h3 class="feature-title">Real-time Updates</h3>
+      <p class="feature-description">
+        Dynamic QR codes that can be updated without changing the printed code. 
+        Edit destinations anytime.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📱</div>
+      <h3 class="feature-title">Mobile Optimized</h3>
+      <p class="feature-description">
+        Fully responsive design that works perfectly on all devices. 
+        Generate QR codes on-the-go.
+      </p>
+    </div>
+  </div>
+
+  <!-- Final CTA -->
+  <div class="footer-cta">
+    <h3>Ready to Create Your First QR Code?</h3>
+    <p>
+      Join thousands of users who trust our platform for their QR code needs. 
+      No credit card required to start.
+    </p>
+    <div class="cta-buttons">
+      <button class="cta-btn btn-register" onclick="window.location.href='{{ url_for('auth.register') }}'">
+        Start Free Trial
+      </button>
+      <button class="cta-btn btn-login" onclick="window.location.href='{{ url_for('auth.login') }}'">
+        Existing User? Login
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Animate stats counter
+  document.addEventListener('DOMContentLoaded', function() {
+    const stats = document.querySelectorAll('.stat-number');
+    
+    stats.forEach(stat => {
+      const target = parseInt(stat.getAttribute('data-count'));
+      const suffix = stat.textContent.replace(/[0-9]/g, '');
+      let current = 0;
+      const increment = target / 50;
+      
+      const updateStat = () => {
+        current += increment;
+        if (current < target) {
+          stat.textContent = Math.floor(current) + suffix;
+          setTimeout(updateStat, 50);
+        } else {
+          stat.textContent = target + suffix;
+        }
+      };
+      
+      // Start animation when element is in viewport
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            updateStat();
+            observer.unobserve(entry.target);
+          }
+        });
+      });
+      
+      observer.observe(stat.parentElement);
+    });
+
+    // Add hover effect to feature cards
+    const cards = document.querySelectorAll('.feature-card');
+    cards.forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-10px) scale(1.02)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+  });
+</script>
+{% endblock %}

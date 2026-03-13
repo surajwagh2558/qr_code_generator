@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    color: #e0e0e0;
+    overflow-x: hidden;
+  }
+
+  .grid-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: grid-move 20s linear infinite;
+    z-index: -1;
+  }
+
+  @keyframes grid-move {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+  }
+
+  .register-card {
+    background: linear-gradient(145deg, rgba(0, 40, 20, 0.9), rgba(0, 80, 40, 0.8));
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 255, 0, 0.2), inset 0 0 20px rgba(0, 255, 0, 0.1);
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+
+  .register-card:hover {
+    transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
+  }
+
+  .neon-input {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 255, 0, 0.5);
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+  }
+
+  .neon-input:focus {
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.5);
+    transform: scale(1.02);
+  }
+
+  .neon-btn {
+    background: linear-gradient(45deg, #00ff00, #00aa00);
+    border: none;
+    color: #000;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+  }
+
+  .neon-btn:hover {
+    transform: translateY(-2px) scale(1.05) rotateX(10deg);
+    box-shadow: 0 10px 25px rgba(0, 255, 0, 0.5);
+  }
+
+  .qr-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #00ff00, #ff00ff);
+    border-radius: 10px;
+    position: relative;
+    animation: rotate-3d 6s infinite linear;
+    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.5);
+  }
+
+  .qr-icon::before {
+    content: 'QR';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  @keyframes rotate-3d {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    25% { transform: rotateX(90deg) rotateY(0deg); }
+    50% { transform: rotateX(90deg) rotateY(90deg); }
+    75% { transform: rotateX(0deg) rotateY(90deg); }
+    100% { transform: rotateX(0deg) rotateY(0deg); }
+  }
+
+  /* Holographic overlay */
+  .holo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* Staggered 3D fade-in for form fields */
+  .form-field {
+    opacity: 0;
+    transform: translateY(20px) rotateX(-10deg);
+    animation: fade-in-3d 0.8s ease-out forwards;
+  }
+
+  .form-field:nth-child(1) { animation-delay: 0.2s; }
+  .form-field:nth-child(2) { animation-delay: 0.4s; }
+  .form-field:nth-child(3) { animation-delay: 0.6s; }
+  .form-field:nth-child(4) { animation-delay: 0.8s; }
+
+  @keyframes fade-in-3d {
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+  }
+</style>
+
+<div class="grid-bg"></div>
+
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="register-card relative p-8 rounded-lg max-w-md w-full">
+    <div class="holo-overlay"></div>
+
+    <div class="flex justify-center mb-6">
+      <div class="qr-icon"></div>
+    </div>
+
+    <h4 class="text-center text-2xl font-semibold mb-6 text-green-400 glow">Register</h4>
+
+    <form method="post" class="space-y-4">
+      <div class="form-field">
+        <label for="username" class="block text-sm font-medium mb-2">Username</label>
+        <input type="text" id="username" name="username" class="neon-input w-full px-4 py-3 rounded-md placeholder-gray-400" placeholder="Username" required>
+      </div>
+
+      <div class="form-field">
+        <label for="email" class="block text-sm font-medium mb-2">Email</label>
+        <input type="email" id="email" name="email" class="neon-input w-full px-4 py-3 rounded-md placeholder-gray-400" placeholder="Email" required>
+      </div>
+
+      <div class="form-field">
+        <label for="password" class="block text-sm font-medium mb-2">Password</label>
+        <input type="password" id="password" name="password" class="neon-input w-full px-4 py-3 rounded-md placeholder-gray-400" placeholder="Password" required>
+      </div>
+
+      <div class="form-field">
+        <button type="submit" class="neon-btn w-full py-3 rounded-md font-semibold">Register</button>
+      </div>
+    </form>
+
+    <p class="text-center mt-6 text-sm">
+      Already have an account? <a href="{{ url_for('auth.login') }}" class="text-green-400 hover:text-green-300 transition-colors">Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

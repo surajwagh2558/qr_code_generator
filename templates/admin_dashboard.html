@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Custom CSS for futuristic table styles and 3D animations -->
+<style>
+  /* Futuristic table styling */
+  .admin-table {
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.9), rgba(0, 40, 80, 0.8));
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+
+  .admin-table:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(2deg);
+  }
+
+  .table thead th {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.8), rgba(0, 20, 40, 0.6));
+    color: #00ffff;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    font-weight: 600;
+  }
+
+  .table tbody tr {
+    background: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .table tbody tr:hover {
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px) rotateX(5deg);
+  }
+
+  .table td {
+    color: #000000;
+    vertical-align: middle;
+  }
+
+  /* Neon button styling */
+  .neon-btn {
+    background: linear-gradient(45deg, #00ffff, #0080ff);
+    border: none;
+    color: #000;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+  }
+
+  .neon-btn:hover {
+    transform: translateY(-2px) scale(1.05) rotateX(10deg);
+    box-shadow: 0 10px 25px rgba(0, 255, 255, 0.5);
+  }
+
+  /* Holographic overlay */
+  .holo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+    pointer-events: none;
+    opacity: 0.3;
+    z-index: 1;
+  }
+
+  /* Staggered 3D fade-in for table rows */
+  .table-row {
+    opacity: 0;
+    transform: translateX(-20px) rotateY(-10deg);
+    animation: fade-in-row 0.6s ease-out forwards;
+  }
+
+  {% for user in users %}
+  .table-row:nth-child({{ loop.index }}) { animation-delay: {{ loop.index * 0.1 }}s; }
+  {% endfor %}
+
+  @keyframes fade-in-row {
+    to {
+      opacity: 1;
+      transform: translateX(0) rotateY(0deg);
+    }
+  }
+
+  /* Floating data nodes for futuristic effect */
+  .data-nodes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .data-node {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 255, 255, 0.7);
+    border-radius: 50%;
+    animation: node-float 8s infinite ease-in-out;
+  }
+
+  .data-node:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+  .data-node:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
+  .data-node:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; }
+  .data-node:nth-child(4) { bottom: 10%; right: 10%; animation-delay: 6s; }
+
+  @keyframes node-float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+    50% { transform: translateY(-15px) scale(1.2); opacity: 1; }
+  }
+</style>
+
+<div class="relative">
+  <!-- Floating data nodes -->
+  <div class="data-nodes">
+    <div class="data-node"></div>
+    <div class="data-node"></div>
+    <div class="data-node"></div>
+    <div class="data-node"></div>
+  </div>
+
+  <!-- Holographic overlay -->
+  <div class="holo-overlay"></div>
+
+  <h3 class="text-center text-2xl font-semibold mb-6 text-cyan-400 glow">Admin Dashboard</h3>
+
+  <div class="table-responsive">
+    <table class="admin-table table table-bordered table-striped w-full">
+      <thead class="table-dark">
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>QR Codes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr class="table-row">
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <a href="{{ url_for('auth.admin_user_qrcodes', user_id=user.id) }}"
+               class="neon-btn btn btn-sm px-4 py-2 rounded">
+              View QR Codes
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
